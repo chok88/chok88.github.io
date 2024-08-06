@@ -1,0 +1,143 @@
+<html >
+	<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta http-equiv="Access-Control-Allow-Credentials" content="*">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <title>去插播播放器tg:ccchok</title>
+	<link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/dplayer/1.25.0/DPlayer.min.css" type="text/css" rel="stylesheet" />
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/hls.js/1.1.5/hls.min.js" type="application/javascript"></script>
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/dplayer/1.25.0/DPlayer.min.js" type="application/javascript"></script>
+	<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.1.1/jquery.min.js"></script>
+<style>
+    body,html {
+    	font: 24px "Microsoft YaHei", Arial, Lucida Grande, Tahoma, sans-serif;
+    	width: 100%;
+    	height: 100%;
+    	padding: 0;
+    	margin: 0;
+    	overflow-x: hidden;
+    	overflow-y: hidden;
+    	background-color: black;
+    }
+    #loading {
+        background:url('https://img.zcool.cn/community/018b305a1d375ca80120908da51a31.gif');
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        z-index: 10000000001;
+        background-size: 100% 100%;
+    }
+    #error{
+        background:url('https://imgapi.xl0408.top');
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        text-align:center;
+        display:table; /*acts like a table*/
+        position: absolute;
+        z-index: 10000000001;
+        background-size: 100% 100%; 
+    }
+    h1 {
+        color: #ffffff;
+        font-size: 1.2rem;
+        margin:0;
+        padding:0;
+        vertical-align:middle; /*middle centred*/
+        display:table-cell; /*acts like a table cell*/
+        font-family: Microsoft Jhenghei;
+    }
+    </style>
+	</head>
+<body>
+    <div id="loading" align="center"></div>
+    <script type="text/javascript">
+    //	if (top === self) {window.close();window.location = "about:blank";}
+	//	try{top.location.hostname;if (top.location.hostname != window.location.hostname) {top.location.href =window.location.hostname;}}catch(e){top.location.href = window.location.hostname;}
+				urls = getQuery('url');
+				function getQuery(variable)
+				{
+       				var query = window.location.search.substring(1);
+       				var vars = query.split("&");
+       				for (var i=0;i<vars.length;i++) {
+               				var pair = vars[i].split("=");
+               				if(pair[0] == variable){return pair[1];}
+       				}
+       				return(false);
+				}
+        var config = {url:urls,};
+        player(config);
+function player(config){
+    if (config.url==''){
+    			kong();
+    		}
+    else if(config.url.indexOf(".mp4")>0||config.url.indexOf(".flv")>0)
+	    {TheDPlayer(config.url,config.vkey,config.next,config.contextmenu,config.contextlink,config.img);}
+	else if(config.url.indexOf(".qq.com")>0||config.url.indexOf(".youku.com")>0||config.url.indexOf(".iqiyi.com")>0||config.url.indexOf(".bilibili.com")>0||config.url.indexOf(".sohu.com")>0||config.url.indexOf(".le.com")>0||config.url.indexOf(".1905.com")>0||config.url.indexOf(".ixigua.com")>0||config.url.indexOf(".pptv.com")>0||config.url.indexOf("tv.cctv.")>0||config.url.indexOf("mgtv.com")>0)
+		{document.getElementById('loading').innerHTML = '<iframe width="100%" height="100%" allowTransparency="true" allowfullscreen="true" frameborder="0" scrolling="no" src="' + 'https://jx.xmflv.com/?url=' + urls + '"></iframe>';}
+    else if(config.url.indexOf(".m3u8")>0){
+        $.ajaxSettings.timeout='2500'; 
+        $.ajaxSettings.async = true;
+    	$.getJSON("https://api.suxun.site/api/delad", {"url":config.url,"time":config.time,"key":config.key},
+    	function(data) {
+    		if(data.code=="200"){
+    			TheDPlayer(data.url,config.vkey,config.next,config.contextmenu,config.contextlink,data.danmuku,config.url,config.img);
+}else{
+    			TheError();
+   		}
+    	},'json').error(function (xhr, status, info) {
+           TheError();
+        });
+    }
+		else
+        {document.getElementById('loading').innerHTML = '<iframe width="100%" height="100%" allowTransparency="true" allowfullscreen="true" frameborder="0" scrolling="no" src="' + urls + '"></iframe>';}
+}
+function TheDPlayer(url,vkey,nexturl,contextmenu,contextlink,danmuku,danmukuid,image){
+    $("#loading").remove();
+    $("body").append("<div id=\"player\"></div>");
+    var dp = new DPlayer({
+	container: document.getElementById('player'),
+          autoplay: true,
+		  hotkey:true,
+		  airplay:true, 
+          preload: 'auto',
+		  video:{url:url,pic:'https://pic3.58cdn.com.cn/p1/big/n_v212d7563c34f1452aaea6b2b90917976d.jpg',},	
+		    }, 
+		function(player){});	
+	    dp.on('loadeddata', function() {
+		cookie.get(urls) ? dp.seek(cookie.get(urls)) : dp.notice("视频已就绪,请多分享,谢谢支持");
+		dp.on('timeupdate', function() {
+			if (cookie) cookie.set(urls, dp.video.currentTime, 30)
+		})
+	});
+	var cookie = {
+		'set': function(a, b, c) {
+			var d = new Date();
+			d.setTime(d.getTime() + c * 24 * 60 * 60 * 1000);
+			var e = document.cookie.match(new RegExp('(^| )' + a + '=([^;]*)(;|$)'));
+			document.cookie = a + '=' + escape(b) + ';path=/;expires=' + d.toUTCString()
+		},
+		'get': function(a) {
+			var b = document.cookie.match(new RegExp('(^| )' + a + '=([^;]*)(;|$)'));
+			if (b != null) return unescape(b[2])
+		},
+		'put': function(a) {
+			var b = a.replace(/[^a-z]+/ig, '');
+			var b = b.substring(b.length - 32);
+			return b
+		}
+	}
+}
+function TheError(){TheDPlayer(config.url,config.vkey,config.next,config.contextmenu,config.contextlink,config.img);}
+function kong(){
+    $("body").append('<div id=\"error\"><h1><font color="red">请输入URL！</font></h1></div>');
+	$("#loading").remove();
+}
+</script>
+</body>
+</html>
